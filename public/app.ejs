@@ -5,6 +5,9 @@
     <body>
         <h1>Hello from styles HTML page</h1>
         <form method='post' action='/validate'>
+            <% if (emailMessage.length > 0) { %>
+                <div style='color:lightcoral'><%= emailMessage %></div>
+            <% } %>
             Enter email
             <input type="text" name='email' />
             <input type='submit' value='Submit' />

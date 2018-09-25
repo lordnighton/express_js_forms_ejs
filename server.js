@@ -4,8 +4,17 @@ var bodyParser = require('body-parser');
 var path = require('path');
 const { body, validationResult } = require('express-validator/check');
 
+var flash = require('connect-flash');
+var session = require('express-session');
+
 var app = express();
 
+app.use(session({ cookie: { maxAge: 60000 }, 
+  secret: 'woot',
+  resave: false, 
+  saveUninitialized: false}));
+
+app.use(flash());
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true })); 
 
@@ -20,11 +29,17 @@ app.post('/validate', [
   const errors = validationResult(req);
   if (errors.isEmpty()) {
     res.render("created.ejs", { email: req.body.email });
-    // res.sendFile(path.join(__dirname+'/public/created.html'));
   } else {
-    return res.status(422).json({ errors: errors.array() });
+    console.log(errors.array);
+    req.flash('emailMessage', 'Email template!')
+    res.redirect('/');
   }
 });
+
+app.get('/',function(req,res) {
+  res.render('app', { emailMessage: req.flash('emailMessage') });
+  // res.sendFile(path.join(__dirname+'/public/app.html'));
+ }); 
 
 app.get('/hello', function (req, res) {
   res.send('US -> UAH ' + currency.usToUah(50));
