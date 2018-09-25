@@ -22,12 +22,8 @@ app.post('/validate', [
     res.render("created.ejs", { email: req.body.email });
     // res.sendFile(path.join(__dirname+'/public/created.html'));
   } else {
-    return res.status(422).json({ errors: errors.a() });
+    return res.status(422).json({ errors: errors.array() });
   }
-});
-
-app.get('/',function(req,res) {
-  res.sendFile(path.join(__dirname+'/public/index.html'));
 });
 
 app.get('/hello', function (req, res) {
@@ -47,4 +43,6 @@ app.post('/create', function (req, res) {
 
 app.listen(8080, function () {
   console.log('Example app listening on port 8080!');
+  console.log('Node env = ' + app.get('env'));
+  // use export NODE_ENV=production before npm start to override this behaviour
 });
