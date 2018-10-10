@@ -2,6 +2,7 @@ var express = require('express');
 var currency = require('./modules/currency');
 var bodyParser = require('body-parser');
 var path = require('path');
+var ejs = require('ejs');
 const { body, validationResult } = require('express-validator/check');
 
 var flash = require('connect-flash');
@@ -36,9 +37,22 @@ app.post('/validate', [
   }
 });
 
+app.get('/template', function(req, res) {
+  var template = 'The value -> <%= message %>';
+  var context = {message: "Allo, rodnoi!"};
+
+  res.send(ejs.render(template, context));
+});
+
 app.get('/',function(req,res) {
-  res.render('app', { emailMessage: req.flash('emailMessage') });
-  // res.sendFile(path.join(__dirname+'/public/app.html'));
+  res.format({
+    html: function() {
+      res.render('app', { emailMessage: req.flash('emailMessage') })
+    },
+    json: function() {
+      res.json('Content negotiation');
+    }
+  });
  }); 
 
 app.get('/hello', function (req, res) {
@@ -56,8 +70,8 @@ app.post('/create', function (req, res) {
   res.send('POST response\n');
 });
 
-app.listen(8080, function () {
-  console.log('Example app listening on port 8080!');
+app.listen(8000, function () {
+  console.log('Example app listening on port 8000!');
   console.log('Node env = ' + app.get('env'));
   // use export NODE_ENV=production before npm start to override this behaviour
 });
